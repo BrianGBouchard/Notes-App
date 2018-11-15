@@ -144,48 +144,45 @@
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="separatorColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" rowHeight="96" id="0gy-ls-lTH" customClass="NoteCell" customModule="NotesApp" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="368" height="96"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" rowHeight="105" id="0gy-ls-lTH" customClass="NoteCell" customModule="NotesApp" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="368" height="105"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="0gy-ls-lTH" id="d7p-El-bxZ">
-                                            <rect key="frame" x="0.0" y="0.0" width="335" height="96"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="0gy-ls-lTH" id="d7p-El-bxZ">
+                                            <rect key="frame" x="0.0" y="0.0" width="335" height="105"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZGk-pw-iQQ">
-                                                    <rect key="frame" x="25" y="11" width="270" height="51"/>
+                                                    <rect key="frame" x="25" y="24" width="263" height="34"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="51" id="3Na-XO-5ob"/>
+                                                        <constraint firstAttribute="height" constant="34" id="PaU-NP-bct"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" name="PingFangHK-Thin" family="PingFang HK" pointSize="20"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7gI-Bd-lq5">
-                                                    <rect key="frame" x="25" y="64" width="270" height="20"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="20" id="wsJ-qZ-nC3"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" name="PingFangHK-Thin" family="PingFang HK" pointSize="14"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vkw-ht-fgg">
+                                                    <rect key="frame" x="26" y="61.5" width="309" height="18.5"/>
+                                                    <fontDescription key="fontDescription" name="PingFangHK-Thin" family="PingFang HK" pointSize="13"/>
                                                     <color key="textColor" red="0.214108256" green="0.60221016839999997" blue="0.20342096770000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstAttribute="trailing" secondItem="ZGk-pw-iQQ" secondAttribute="trailing" constant="47" id="0vN-HA-6yQ"/>
-                                                <constraint firstAttribute="bottom" secondItem="7gI-Bd-lq5" secondAttribute="bottom" constant="11.5" id="7lw-5c-VWc"/>
+                                                <constraint firstItem="ZGk-pw-iQQ" firstAttribute="top" secondItem="d7p-El-bxZ" secondAttribute="top" constant="24" id="6fc-CC-mSN"/>
+                                                <constraint firstAttribute="bottom" secondItem="Vkw-ht-fgg" secondAttribute="bottom" constant="25" id="Ipx-a3-J66"/>
                                                 <constraint firstItem="ZGk-pw-iQQ" firstAttribute="leading" secondItem="d7p-El-bxZ" secondAttribute="leading" constant="25" id="Kj3-oW-shR"/>
-                                                <constraint firstItem="ZGk-pw-iQQ" firstAttribute="top" secondItem="d7p-El-bxZ" secondAttribute="top" constant="11" id="PFb-Ma-Mrr"/>
-                                                <constraint firstItem="7gI-Bd-lq5" firstAttribute="leading" secondItem="d7p-El-bxZ" secondAttribute="leading" constant="25" id="rCW-oS-dJq"/>
-                                                <constraint firstItem="7gI-Bd-lq5" firstAttribute="top" secondItem="ZGk-pw-iQQ" secondAttribute="bottom" constant="2" id="y0N-Pd-pBk"/>
+                                                <constraint firstItem="Vkw-ht-fgg" firstAttribute="leading" secondItem="d7p-El-bxZ" secondAttribute="leading" constant="26" id="pxP-Fc-06c"/>
+                                                <constraint firstItem="Vkw-ht-fgg" firstAttribute="top" secondItem="ZGk-pw-iQQ" secondAttribute="bottom" constant="3.5" id="tnE-PH-nJ1"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstAttribute="trailing" secondItem="7gI-Bd-lq5" secondAttribute="trailing" constant="80" id="CVH-n1-fcx"/>
+                                            <constraint firstAttribute="trailing" secondItem="Vkw-ht-fgg" secondAttribute="trailing" constant="33" id="Mii-h3-Y2d"/>
                                         </constraints>
                                         <connections>
                                             <outlet property="titleLabel" destination="ZGk-pw-iQQ" id="AKM-ap-gfS"/>
-                                            <outlet property="updateTimeLabel" destination="7gI-Bd-lq5" id="ouQ-51-ALz"/>
+                                            <outlet property="updateTimeLabel" destination="Vkw-ht-fgg" id="YCa-gM-LPX"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -207,11 +204,14 @@
                     <navigationItem key="navigationItem" title="Notes" id="Qzi-fT-51r">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="18C-Va-GrM">
                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <action selector="addButtonPressedWithSender:" destination="dnY-ts-rZi" id="mek-0Y-Piw"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="notesTable" destination="eD8-8d-jpu" id="mCr-lc-yru"/>
-                        <segue destination="EyE-xf-75v" kind="push" identifier="detailView" id="BJd-SV-To5"/>
+                        <segue destination="EyE-xf-75v" kind="show" identifier="detailView" id="BJd-SV-To5"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ETe-ML-fRZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -251,12 +251,20 @@
                                     <outlet property="delegate" destination="EyE-xf-75v" id="rtA-dL-pXr"/>
                                 </connections>
                             </textView>
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5v5-em-1Gc">
+                                <rect key="frame" x="137" y="540" width="100" height="30"/>
+                                <state key="normal" title="Delete Note"/>
+                                <connections>
+                                    <action selector="deleteButtonPressedWithSender:" destination="EyE-xf-75v" eventType="touchUpInside" id="q8W-tP-OFT"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="QYA-Ex-fwb" firstAttribute="leading" secondItem="8j8-AL-Nfx" secondAttribute="leading" constant="33" id="GFY-Qy-z6g"/>
                             <constraint firstItem="8j8-AL-Nfx" firstAttribute="trailing" secondItem="QYA-Ex-fwb" secondAttribute="trailing" constant="34" id="J1X-rx-cPC"/>
                             <constraint firstItem="QYA-Ex-fwb" firstAttribute="top" secondItem="KTi-qC-BaL" secondAttribute="bottom" constant="8" id="R7j-7K-0af"/>
+                            <constraint firstItem="8j8-AL-Nfx" firstAttribute="bottom" secondItem="5v5-em-1Gc" secondAttribute="bottom" constant="33" id="UFa-mX-a3y"/>
                             <constraint firstItem="KTi-qC-BaL" firstAttribute="centerX" secondItem="8j8-AL-Nfx" secondAttribute="centerX" id="ZpS-mJ-Neh"/>
                             <constraint firstItem="KTi-qC-BaL" firstAttribute="top" secondItem="8j8-AL-Nfx" secondAttribute="top" id="xHs-7T-N6E"/>
                         </constraints>
@@ -266,9 +274,11 @@
                     <connections>
                         <outlet property="noteBody" destination="QYA-Ex-fwb" id="SJu-ej-NIN"/>
                         <outlet property="titleLabel" destination="KTi-qC-BaL" id="e2k-yb-6Zp"/>
+                        <segue destination="Jcz-x6-z9T" kind="unwind" identifier="unwindToTable" unwindAction="unwindToTableWithSegue:" id="ZkX-dB-HAL"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gLQ-Nl-4r6" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="Jcz-x6-z9T" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="2524" y="139.880059970015"/>
         </scene>

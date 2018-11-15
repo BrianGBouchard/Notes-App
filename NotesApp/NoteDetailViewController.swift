@@ -27,14 +27,8 @@ class NoteDetailViewController: UIViewController, UITextViewDelegate, UIGestureR
             }
         }
 
-        /*let deselectTextView = UITapGestureRecognizer(target: self, action: #selector(handleDeselectTap(gesture:)))
+        let deselectTextView = UITapGestureRecognizer(target: self, action: #selector(handleDeselectTap(gesture:)))
         self.view.addGestureRecognizer(deselectTextView)
-
-        let removeTitlePlaceholderText = UITapGestureRecognizer(target: self, action: #selector(handleRemoveTitlePlaceholderTap(gesture:)))
-        titleLabel.addGestureRecognizer(removeTitlePlaceholderText)
-
-        let removeBodyPlaceholderText = UITapGestureRecognizer(target: self, action: #selector(handleRemoveBodyPlaceholderTap(gesture:)))
-        noteBody.addGestureRecognizer(removeBodyPlaceholderText)*/
     }
 
     @objc func handleDeselectTap(gesture: UITapGestureRecognizer) {
@@ -45,16 +39,9 @@ class NoteDetailViewController: UIViewController, UITextViewDelegate, UIGestureR
         }
     }
 
-    @objc func handleRemoveTitlePlaceholderTap(gesture: UITapGestureRecognizer) {
-        if titleLabel.text == "[Add Title]" {
-            titleLabel.text = ""
-        }
-    }
-
-    @objc func handleRemoveBodyPlaceholderTap(gesture: UITapGestureRecognizer) {
-        if noteBody.text == "[Add Text]" {
-            noteBody.text = ""
-        }
+    @IBAction func deleteButtonPressed(sender: Any?) {
+        userRef.child(selectedNoteId!).removeValue()
+        performSegue(withIdentifier: "unwindToTable", sender: self)
     }
 
     func textViewDidChange(_ textView: UITextView) {
@@ -63,6 +50,7 @@ class NoteDetailViewController: UIViewController, UITextViewDelegate, UIGestureR
         } else if textView === titleLabel {
             userRef.child(selectedNoteId!).child("Title").setValue(titleLabel.text)
         }
+        getUpdateTime()
     }
 
     func textViewDidBeginEditing(_ textView: UITextView) {
@@ -89,4 +77,99 @@ class NoteDetailViewController: UIViewController, UITextViewDelegate, UIGestureR
         }
     }
 
+    func getUpdateTime() {
+        var weekdayString: String?
+        var monthString: String?
+        var ampm: String?
+        var convertedHour: Int?
+        let date = Date()
+        let calendar = Calendar.current
+        let month = calendar.component(.month, from: date)
+        let weekday = calendar.component(.weekday, from: date)
+        let hour = calendar.component(.hour, from: date)
+
+        if weekday == 1 {
+            weekdayString = "Sunday"
+        } else if weekday == 2 {
+            weekdayString = "Monday"
+        } else if weekday == 3 {
+            weekdayString = "Tuesday"
+        } else if weekday == 4 {
+            weekdayString = "Wednesday"
+        } else if weekday == 5 {
+            weekdayString = "Thursday"
+        } else if weekday == 6 {
+            weekdayString = "Friday"
+        } else if weekday == 7 {
+            weekdayString = "Saturday"
+        }
+
+        if month == 1 {
+            monthString = "January"
+        } else if month == 2 {
+            monthString = "February"
+        } else if month == 3 {
+            monthString = "March"
+        } else if month == 4 {
+            monthString = "April"
+        } else if month == 5 {
+            monthString = "May"
+        } else if month == 6 {
+            monthString = "June"
+        } else if month == 7 {
+            monthString = "July"
+        } else if month == 8 {
+            monthString = "August"
+        } else if month == 9 {
+            monthString = "September"
+        } else if month == 10 {
+            monthString = "October"
+        } else if month == 11 {
+            monthString = "November"
+        } else if month == 12 {
+            monthString = "December"
+        }
+
+        if hour < 12 {
+            ampm = "AM"
+        } else {
+            ampm = "PM"
+        }
+
+        if hour == 13 {
+            convertedHour = 1
+        } else if hour == 14 {
+            convertedHour = 2
+        } else if hour == 15 {
+            convertedHour = 3
+        } else if hour == 16 {
+            convertedHour = 4
+        } else if hour == 17 {
+            convertedHour = 5
+        } else if hour == 18 {
+            convertedHour = 6
+        } else if hour == 19 {
+            convertedHour = 7
+        } else if hour == 20 {
+            convertedHour = 8
+        } else if hour == 21 {
+            convertedHour = 9
+        } else if hour == 22 {
+            convertedHour = 10
+        } else if hour == 23 {
+            convertedHour = 11
+        } else if hour == 0 {
+            convertedHour = 12
+        }
+
+
+
+        let day = calendar.component(.day, from: date)
+        let year = calendar.component(.year, from: date)
+        let minute = calendar.component(.minute, from: date)
+        if let wds = weekdayString, let mstring = monthString, let hrs = convertedHour, let AmPm = ampm {
+            let updateTimeMessage = "Updated \(wds), \(mstring) \(day) at \(hrs):\(minute) \(AmPm)"
+            userRef.child(selectedNoteId!).child("UpdateTime").setValue(updateTimeMessage)
+        }
+    }
 }

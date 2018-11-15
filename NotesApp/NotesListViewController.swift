@@ -1,11 +1,3 @@
-//
-//  NotesListViewController.swift
-//  NotesApp
-//
-//  Created by Brian Bouchard on 11/14/18.
-//  Copyright © 2018 Brian Bouchard. All rights reserved.
-//
-
 import Foundation
 import UIKit
 import Firebase
@@ -16,7 +8,7 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
 
     @IBOutlet var notesTable: UITableView!
 
-    var notes: [(stringID: String, title: String)] = []
+    var notes: [(stringID: String, title: String, updateTime: String)] = []
     var selectedNoteID: String?
     let databaseRef = Database.database().reference(withPath: "Users")
 
@@ -44,9 +36,11 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
                     do {
                         let json = try JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
                         for item in json {
-                            userRef.child(item.key).child("Title").observeSingleEvent(of: .value, with: { (snapshot) in
-                                self.notes.append((stringID: item.key, title: snapshot.value as! String))
-                                self.notesTable.reloadData()
+                            userRef.child(item.key).child("Title").observeSingleEvent(of: .value, with: { (titleSnapshot) in
+                                userRef.child(item.key).child("UpdateTime").observeSingleEvent(of: .value, with: { (updateTimeSnapshot) in
+                                    self.notes.append((stringID: item.key, title: titleSnapshot.value as! String, updateTime: updateTimeSnapshot.value as! String))
+                                    self.notesTable.reloadData()
+                                })
                             })
                         }
                     } catch {
@@ -70,7 +64,7 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
                     self.notes.remove(at: indexPath.row)
                     self.notesTable.deleteRows(at: [indexPath], with: UITableView.RowAnimation.automatic)
                 }
-                let cancelAction = UIAlertAction(title: "Cancel", style: .default, handler: nil)
+                let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
                 alert.addAction(okAction)
                 alert.addAction(cancelAction)
                 self.present(alert, animated: true)
@@ -82,7 +76,9 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
         let newNoteItem: (stringID: String, title: String) = (stringID: String(arc4random()), title: "")
         databaseRef.child(Auth.auth().currentUser!.uid).child(newNoteItem.stringID).child("Title").setValue("")
         databaseRef.child(Auth.auth().currentUser!.uid).child(newNoteItem.stringID).child("NoteBody").setValue("")
-        
+        databaseRef.child(Auth.auth().currentUser!.uid).child(newNoteItem.stringID).child("UpdateTime").setValue("")
+        self.selectedNoteID = newNoteItem.stringID
+        self.performSegue(withIdentifier: "detailView", sender: self)
 
     }
 
@@ -96,6 +92,10 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
         }
     }
 
+    @IBAction func unwindToTable(segue: UIStoryboardSegue) {
+        
+    }
+
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -105,13 +105,17 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 96
+        return 105
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! NoteCell
         cell.titleLabel.text! = String(notes[indexPath.row].title)
+        if cell.titleLabel.text! == "" {
+            cell.titleLabel.text! = "[No Title]"
+        }
         cell.stringID = notes[indexPath.row].stringID
+        cell.updateTimeLabel.text = notes[indexPath.row].updateTime
         return cell
     }
 
