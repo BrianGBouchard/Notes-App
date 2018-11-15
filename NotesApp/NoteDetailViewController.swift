@@ -8,6 +8,8 @@ class NoteDetailViewController: UIViewController, UITextViewDelegate, UIGestureR
     @IBOutlet var titleLabel: UITextView!
     @IBOutlet var noteBody: UITextView!
     var selectedNoteId: String?
+    var priorView: NotesListViewController?
+    var selectedCell: UITableViewCell?
     let userRef = Database.database().reference(withPath: "Users").child(Auth.auth().currentUser!.uid)
     
     override func viewDidLoad() {
@@ -29,6 +31,10 @@ class NoteDetailViewController: UIViewController, UITextViewDelegate, UIGestureR
 
         let deselectTextView = UITapGestureRecognizer(target: self, action: #selector(handleDeselectTap(gesture:)))
         self.view.addGestureRecognizer(deselectTextView)
+
+        let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe(gesture:)))
+        swipeGesture.direction = .right
+        self.view.addGestureRecognizer(swipeGesture)
     }
 
     @objc func handleDeselectTap(gesture: UITapGestureRecognizer) {
@@ -39,9 +45,14 @@ class NoteDetailViewController: UIViewController, UITextViewDelegate, UIGestureR
         }
     }
 
+    @objc func handleSwipe(gesture: UISwipeGestureRecognizer) {
+        performSegue(withIdentifier: "unwindToTable", sender: self)
+    }
+
     @IBAction func deleteButtonPressed(sender: Any?) {
         userRef.child(selectedNoteId!).removeValue()
         performSegue(withIdentifier: "unwindToTable", sender: self)
+        priorView!.deleteCell(cell: self.selectedCell!)
     }
 
     func textViewDidChange(_ textView: UITextView) {
@@ -160,9 +171,9 @@ class NoteDetailViewController: UIViewController, UITextViewDelegate, UIGestureR
             convertedHour = 11
         } else if hour == 0 {
             convertedHour = 12
+        } else {
+            convertedHour = hour
         }
-
-
 
         let day = calendar.component(.day, from: date)
         let year = calendar.component(.year, from: date)

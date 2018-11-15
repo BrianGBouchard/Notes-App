@@ -10,6 +10,7 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
 
     var notes: [(stringID: String, title: String, updateTime: String)] = []
     var selectedNoteID: String?
+    var selectedCell: UITableViewCell?
     let databaseRef = Database.database().reference(withPath: "Users")
 
     override func viewDidLoad() {
@@ -85,9 +86,24 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "detailView" {
             let nextView = segue.destination as! NoteDetailViewController
+            nextView.priorView = self
+            nextView.selectedCell = self.selectedCell
             if let selectedNote = self.selectedNoteID {
                 nextView.selectedNoteId = selectedNote
                 self.selectedNoteID = nil
+                self.selectedCell = nil
+            }
+        }
+    }
+
+    func deleteCell(cell: UITableViewCell) {
+        for item in notes {
+            if item.title == (cell as! NoteCell).titleLabel.text! {
+                let index = notes.lastIndex { (note) -> Bool in
+                    note == item
+                }
+                notes.remove(at: index!)
+                notesTable.deleteRows(at: [[0,index!]], with: UITableView.RowAnimation.bottom)
             }
         }
     }
@@ -125,6 +141,7 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
             return
         } else {
             self.selectedNoteID = notes[indexPath.row].stringID
+            self.selectedCell = tableView.cellForRow(at: indexPath)
             tableView.deselectRow(at: indexPath, animated: true)
             self.performSegue(withIdentifier: "detailView", sender: self)
         }
