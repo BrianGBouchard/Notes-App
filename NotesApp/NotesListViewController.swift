@@ -17,8 +17,8 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        logoutButton.layer.borderWidth = 0.5
-        logoutButton.layer.borderColor = logoutButton.titleColor(for: .normal)
+        logoutButton.layer.borderWidth = 1.0
+        logoutButton.layer.borderColor = logoutButton.titleColor(for: .normal)?.cgColor
         logoutButton.layer.cornerRadius = 5.0
         logoutButton.clipsToBounds = true
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(longPress:)))
@@ -91,9 +91,23 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
         databaseRef.child(Auth.auth().currentUser!.uid).child(newNoteItem.stringID).child("UpdateTime").setValue("")
         self.selectedNote = newNoteItem
         notes.append(newNoteItem)
-        notesTable.reloadData()
+         notesTable.reloadData()
+        if let index = notes.firstIndex(where: { (item) -> Bool in
+            item.stringID == newNoteItem.stringID
+        }) {
+            self.selectedCell = notesTable.cellForRow(at: [0,index])
+        }
         self.performSegue(withIdentifier: "detailView", sender: self)
 
+    }
+
+    @IBAction func logoutButtonPressed(sender: Any?) {
+        do {
+            try Auth.auth().signOut()
+            self.dismiss(animated: true, completion: nil)
+        } catch {
+            print("Error could not sign out")
+        }
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

@@ -7,6 +7,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, UIGestureRecog
     @IBOutlet var emailTextField: UITextField!
     @IBOutlet var passwordTextField: UITextField!
     @IBOutlet var activityMonitor: UIActivityIndicatorView!
+    @IBOutlet var loginButton: UIButton!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,6 +30,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate, UIGestureRecog
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
 
+        perform(#selector(loginButtonPressed(sender:)), with: loginButton)
+
         return true
     }
 
@@ -38,6 +41,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate, UIGestureRecog
             Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!) { (user, error) in
                 if user != nil {
                     self.performSegue(withIdentifier: "login", sender: self)
+                    self.emailTextField.text = ""
+                    self.passwordTextField.text = ""
                     self.activityMonitor.stopAnimating()
                 } else {
                     if let errorDescription = error?.localizedDescription {
@@ -63,7 +68,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate, UIGestureRecog
             activityMonitor.startAnimating()
             Auth.auth().createUser(withEmail: emailTextField.text!, password: passwordTextField.text!) { (user, error) in
                 if user != nil {
-                    print("success")
+                    self.emailTextField.text = ""
+                    self.passwordTextField.text = ""
+                    self.activityMonitor.stopAnimating()
                     self.performSegue(withIdentifier: "login", sender: self)
                 } else {
                     if let errorDescription = error?.localizedDescription {

@@ -42,6 +42,15 @@ class NoteDetailViewController: UIViewController, UITextViewDelegate, UIGestureR
         self.view.addGestureRecognizer(swipeGesture)
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(true)
+        if let priorView = self.priorView, let currentNote = self.selectedNote, let currentCell = self.selectedCell {
+            if ((self.titleLabel.text == "[Add Title]" || self.titleLabel.text == "") && (self.noteBody.text == "[Add Text]" || self.noteBody.text == "")) {
+                priorView.deleteCell(cellForNote: currentNote)
+                userRef.child(currentNote.stringID).removeValue()            }
+        }
+    }
+
     @objc func handleDeselectTap(gesture: UITapGestureRecognizer) {
         if noteBody.isFirstResponder {
             noteBody.resignFirstResponder()

@@ -101,6 +101,7 @@
                     <connections>
                         <outlet property="activityMonitor" destination="jyp-8W-kQJ" id="CAS-wR-uuK"/>
                         <outlet property="emailTextField" destination="JIR-yD-mBe" id="3ip-a4-oWY"/>
+                        <outlet property="loginButton" destination="Aih-VG-z1f" id="T9w-b5-hff"/>
                         <outlet property="passwordTextField" destination="4Hs-Kh-hYE" id="OnY-VM-Og7"/>
                         <segue destination="8AH-CP-lme" kind="showDetail" identifier="login" id="HHV-Uq-hAy"/>
                     </connections>
@@ -193,15 +194,18 @@
                                 </connections>
                             </tableView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qt2-eq-EJZ">
-                                <rect key="frame" x="157.5" y="547" width="60" height="36"/>
+                                <rect key="frame" x="145" y="547" width="85" height="36"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="36" id="9LC-Wm-S3B"/>
-                                    <constraint firstAttribute="width" constant="60" id="qU8-6r-hG9"/>
+                                    <constraint firstAttribute="width" constant="85" id="qU8-6r-hG9"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="PingFangHK-Thin" family="PingFang HK" pointSize="17"/>
                                 <state key="normal" title="Log out">
                                     <color key="titleColor" red="0.214108256" green="0.60221016839999997" blue="0.20342096770000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
+                                <connections>
+                                    <action selector="logoutButtonPressedWithSender:" destination="dnY-ts-rZi" eventType="touchUpInside" id="j28-85-GTQ"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
