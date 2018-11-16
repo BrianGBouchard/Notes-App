@@ -118,6 +118,7 @@
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="barTintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <textAttributes key="titleTextAttributes">
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -140,7 +141,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="eD8-8d-jpu">
-                                <rect key="frame" x="0.0" y="0.0" width="368" height="603"/>
+                                <rect key="frame" x="0.0" y="0.0" width="368" height="527"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="separatorColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
@@ -191,13 +192,26 @@
                                     <outlet property="delegate" destination="dnY-ts-rZi" id="iMx-ig-ZcT"/>
                                 </connections>
                             </tableView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qt2-eq-EJZ">
+                                <rect key="frame" x="157.5" y="547" width="60" height="36"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="36" id="9LC-Wm-S3B"/>
+                                    <constraint firstAttribute="width" constant="60" id="qU8-6r-hG9"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="PingFangHK-Thin" family="PingFang HK" pointSize="17"/>
+                                <state key="normal" title="Log out">
+                                    <color key="titleColor" red="0.214108256" green="0.60221016839999997" blue="0.20342096770000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="eD8-8d-jpu" firstAttribute="bottom" secondItem="Fw1-2I-ACx" secondAttribute="bottom" id="78a-Wn-MrM"/>
+                            <constraint firstItem="Qt2-eq-EJZ" firstAttribute="centerX" secondItem="Fw1-2I-ACx" secondAttribute="centerX" id="JpU-En-IOb"/>
                             <constraint firstItem="eD8-8d-jpu" firstAttribute="top" secondItem="Fw1-2I-ACx" secondAttribute="top" id="XuF-cL-lhf"/>
+                            <constraint firstItem="Qt2-eq-EJZ" firstAttribute="top" secondItem="eD8-8d-jpu" secondAttribute="bottom" constant="20" id="g1I-Z1-OKr"/>
                             <constraint firstItem="eD8-8d-jpu" firstAttribute="trailing" secondItem="Fw1-2I-ACx" secondAttribute="trailing" constant="-7" id="gaz-Y4-AaZ"/>
                             <constraint firstItem="eD8-8d-jpu" firstAttribute="leading" secondItem="Fw1-2I-ACx" secondAttribute="leading" id="jjW-R3-T5k"/>
+                            <constraint firstItem="Fw1-2I-ACx" firstAttribute="bottom" secondItem="Qt2-eq-EJZ" secondAttribute="bottom" constant="20" id="t5Z-jF-D7L"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Fw1-2I-ACx"/>
                     </view>
@@ -210,6 +224,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="logoutButton" destination="Qt2-eq-EJZ" id="kix-8R-gjK"/>
                         <outlet property="notesTable" destination="eD8-8d-jpu" id="mCr-lc-yru"/>
                         <segue destination="EyE-xf-75v" kind="show" identifier="detailView" id="BJd-SV-To5"/>
                     </connections>
@@ -251,8 +266,14 @@
                                     <outlet property="delegate" destination="EyE-xf-75v" id="rtA-dL-pXr"/>
                                 </connections>
                             </textView>
-                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5v5-em-1Gc">
-                                <rect key="frame" x="137" y="540" width="100" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5v5-em-1Gc">
+                                <rect key="frame" x="132.5" y="547" width="110" height="36"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="110" id="5MO-yO-5Pg"/>
+                                    <constraint firstAttribute="height" constant="36" id="ZyS-Ej-eeK"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="PingFangHK-Thin" family="PingFang HK" pointSize="17"/>
+                                <color key="tintColor" red="0.214108256" green="0.60221016839999997" blue="0.20342096770000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <state key="normal" title="Delete Note"/>
                                 <connections>
                                     <action selector="deleteButtonPressedWithSender:" destination="EyE-xf-75v" eventType="touchUpInside" id="q8W-tP-OFT"/>
@@ -261,10 +282,11 @@
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="5v5-em-1Gc" firstAttribute="centerX" secondItem="8j8-AL-Nfx" secondAttribute="centerX" id="AP3-qA-BYV"/>
                             <constraint firstItem="QYA-Ex-fwb" firstAttribute="leading" secondItem="8j8-AL-Nfx" secondAttribute="leading" constant="33" id="GFY-Qy-z6g"/>
                             <constraint firstItem="8j8-AL-Nfx" firstAttribute="trailing" secondItem="QYA-Ex-fwb" secondAttribute="trailing" constant="34" id="J1X-rx-cPC"/>
                             <constraint firstItem="QYA-Ex-fwb" firstAttribute="top" secondItem="KTi-qC-BaL" secondAttribute="bottom" constant="8" id="R7j-7K-0af"/>
-                            <constraint firstItem="8j8-AL-Nfx" firstAttribute="bottom" secondItem="5v5-em-1Gc" secondAttribute="bottom" constant="33" id="UFa-mX-a3y"/>
+                            <constraint firstItem="8j8-AL-Nfx" firstAttribute="bottom" secondItem="5v5-em-1Gc" secondAttribute="bottom" constant="20" id="UFa-mX-a3y"/>
                             <constraint firstItem="KTi-qC-BaL" firstAttribute="centerX" secondItem="8j8-AL-Nfx" secondAttribute="centerX" id="ZpS-mJ-Neh"/>
                             <constraint firstItem="KTi-qC-BaL" firstAttribute="top" secondItem="8j8-AL-Nfx" secondAttribute="top" id="xHs-7T-N6E"/>
                         </constraints>
@@ -272,6 +294,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="FJG-bP-e68"/>
                     <connections>
+                        <outlet property="deleteButton" destination="5v5-em-1Gc" id="TZd-VP-QWA"/>
                         <outlet property="noteBody" destination="QYA-Ex-fwb" id="SJu-ej-NIN"/>
                         <outlet property="titleLabel" destination="KTi-qC-BaL" id="e2k-yb-6Zp"/>
                         <segue destination="Jcz-x6-z9T" kind="unwind" identifier="unwindToTable" unwindAction="unwindToTableWithSegue:" id="ZkX-dB-HAL"/>

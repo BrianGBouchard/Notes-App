@@ -7,24 +7,29 @@ import FirebaseAuth
 class NotesListViewController: UIViewController, UINavigationControllerDelegate, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet var notesTable: UITableView!
+    @IBOutlet var logoutButton: UIButton!
 
-    var notes: [(stringID: String, title: String, updateTime: String)] = []
-    var selectedNoteID: String?
+    var notes: Array<Note> = []
+    //var notes: [(stringID: String, title: String, updateTime: String)] = []
+    var selectedNote: Note?
     var selectedCell: UITableViewCell?
     let databaseRef = Database.database().reference(withPath: "Users")
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        logoutButton.layer.borderWidth = 0.5
+        logoutButton.layer.borderColor = logoutButton.titleColor(for: .normal)
+        logoutButton.layer.cornerRadius = 5.0
+        logoutButton.clipsToBounds = true
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(longPress:)))
         self.view.addGestureRecognizer(longPress)
+        getData()
 
 
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
-        notes = []
-        getData()
     }
 
     func getData() {
@@ -39,8 +44,14 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
                         for item in json {
                             userRef.child(item.key).child("Title").observeSingleEvent(of: .value, with: { (titleSnapshot) in
                                 userRef.child(item.key).child("UpdateTime").observeSingleEvent(of: .value, with: { (updateTimeSnapshot) in
-                                    self.notes.append((stringID: item.key, title: titleSnapshot.value as! String, updateTime: updateTimeSnapshot.value as! String))
-                                    self.notesTable.reloadData()
+                                    userRef.child(item.key).child("NoteBody").observeSingleEvent(of: .value, with: { (messageSnapshot) in
+                                        let note = Note(stringID: item.key, title: titleSnapshot.value as! String, updateTime: updateTimeSnapshot.value as! String, message: messageSnapshot.value as! String)
+                                        self.notes.append(note)
+
+                                        //self.notes.append((stringID: item.key, title: titleSnapshot.value as! String, updateTime: updateTimeSnapshot.value as! String))
+                                        self.notesTable.reloadData()
+                                    })
+
                                 })
                             })
                         }
@@ -74,11 +85,13 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
     }
 
     @IBAction func addButtonPressed(sender: Any?) {
-        let newNoteItem: (stringID: String, title: String) = (stringID: String(arc4random()), title: "")
+        let newNoteItem: Note = Note(stringID: String(arc4random()), title: "", updateTime: "", message: "")
         databaseRef.child(Auth.auth().currentUser!.uid).child(newNoteItem.stringID).child("Title").setValue("")
         databaseRef.child(Auth.auth().currentUser!.uid).child(newNoteItem.stringID).child("NoteBody").setValue("")
         databaseRef.child(Auth.auth().currentUser!.uid).child(newNoteItem.stringID).child("UpdateTime").setValue("")
-        self.selectedNoteID = newNoteItem.stringID
+        self.selectedNote = newNoteItem
+        notes.append(newNoteItem)
+        notesTable.reloadData()
         self.performSegue(withIdentifier: "detailView", sender: self)
 
     }
@@ -88,24 +101,40 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
             let nextView = segue.destination as! NoteDetailViewController
             nextView.priorView = self
             nextView.selectedCell = self.selectedCell
-            if let selectedNote = self.selectedNoteID {
-                nextView.selectedNoteId = selectedNote
-                self.selectedNoteID = nil
+            if let currentNote = self.selectedNote {
+                nextView.selectedNote = currentNote
+                self.selectedNote = nil
                 self.selectedCell = nil
             }
         }
     }
 
-    func deleteCell(cell: UITableViewCell) {
-        for item in notes {
+    func deleteCell(cellForNote: Note) {
+        /*for item in notes {
             if item.title == (cell as! NoteCell).titleLabel.text! {
                 let index = notes.lastIndex { (note) -> Bool in
-                    note == item
+                    note === item
                 }
                 notes.remove(at: index!)
                 notesTable.deleteRows(at: [[0,index!]], with: UITableView.RowAnimation.bottom)
+                table
             }
+        }*/
+        let index = notes.firstIndex { (currentNote) -> Bool in
+            currentNote.stringID == cellForNote.stringID
         }
+        notes.remove(at: index!)
+        notesTable.deleteRows(at: [[0,index!]], with: UITableView.RowAnimation.bottom)
+    }
+
+    func updateCell(cell: UITableViewCell, oldNote: Note, newNote: Note) {
+        let index = notes.firstIndex { (currentNote) -> Bool in
+            currentNote.stringID == oldNote.stringID
+        }
+        notes[index!] = newNote
+        let tableCell = notesTable.cellForRow(at: [0,index!]) as! NoteCell
+        tableCell.titleLabel.text! = newNote.title
+        tableCell.updateTimeLabel.text! = newNote.updateTime
     }
 
     @IBAction func unwindToTable(segue: UIStoryboardSegue) {
@@ -132,6 +161,8 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
         }
         cell.stringID = notes[indexPath.row].stringID
         cell.updateTimeLabel.text = notes[indexPath.row].updateTime
+        cell.updateTimeLabel.fadeTransition(1.0)
+        cell.titleLabel.fadeTransition(1.0)
         return cell
     }
 
@@ -140,7 +171,7 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
             tableView.deselectRow(at: indexPath, animated: true)
             return
         } else {
-            self.selectedNoteID = notes[indexPath.row].stringID
+            self.selectedNote = notes[indexPath.row]
             self.selectedCell = tableView.cellForRow(at: indexPath)
             tableView.deselectRow(at: indexPath, animated: true)
             self.performSegue(withIdentifier: "detailView", sender: self)

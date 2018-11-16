@@ -7,8 +7,9 @@ class NoteDetailViewController: UIViewController, UITextViewDelegate, UIGestureR
 
     @IBOutlet var titleLabel: UITextView!
     @IBOutlet var noteBody: UITextView!
-    var selectedNoteId: String?
-    var priorView: NotesListViewController?
+    @IBOutlet var deleteButton: UIButton!
+    var selectedNote: Note?
+    weak var priorView: NotesListViewController?
     var selectedCell: UITableViewCell?
     let userRef = Database.database().reference(withPath: "Users").child(Auth.auth().currentUser!.uid)
     
@@ -16,18 +17,22 @@ class NoteDetailViewController: UIViewController, UITextViewDelegate, UIGestureR
         super.viewDidLoad()
         noteBody.delegate = self
 
-        userRef.child(selectedNoteId!).child("Title").observeSingleEvent(of: .value) { (snapshot) in
-            self.titleLabel.text = snapshot.value as? String
-            if self.titleLabel.text == "" {
-                self.titleLabel.text = "[Add Title]"
-            }
+        if selectedNote?.title == "" {
+            titleLabel.text = "[Add Title]"
+        } else {
+            titleLabel.text = selectedNote?.title
         }
-        userRef.child(selectedNoteId!).child("NoteBody").observeSingleEvent(of: .value) { (snapshot) in
-            self.noteBody.text = snapshot.value as? String
-            if self.noteBody.text == "" {
-                self.noteBody.text = "[Add Text]"
-            }
+
+        if selectedNote?.message == "" {
+            noteBody.text = "[Add Text]"
+        } else {
+            noteBody.text = selectedNote?.message
         }
+
+        deleteButton.layer.borderWidth = 1.0
+        deleteButton.layer.borderColor = deleteButton.titleColor(for: .normal)?.cgColor
+        deleteButton.layer.cornerRadius = 5.0
+        deleteButton.clipsToBounds = true
 
         let deselectTextView = UITapGestureRecognizer(target: self, action: #selector(handleDeselectTap(gesture:)))
         self.view.addGestureRecognizer(deselectTextView)
@@ -50,16 +55,16 @@ class NoteDetailViewController: UIViewController, UITextViewDelegate, UIGestureR
     }
 
     @IBAction func deleteButtonPressed(sender: Any?) {
-        userRef.child(selectedNoteId!).removeValue()
+        userRef.child(selectedNote!.stringID).removeValue()
         performSegue(withIdentifier: "unwindToTable", sender: self)
-        priorView!.deleteCell(cell: self.selectedCell!)
+        priorView?.deleteCell(cellForNote: self.selectedNote!)
     }
 
     func textViewDidChange(_ textView: UITextView) {
         if textView === noteBody {
-            userRef.child(selectedNoteId!).child("NoteBody").setValue(noteBody.text)
+            userRef.child(selectedNote!.stringID).child("NoteBody").setValue(noteBody.text)
         } else if textView === titleLabel {
-            userRef.child(selectedNoteId!).child("Title").setValue(titleLabel.text)
+            userRef.child(selectedNote!.stringID).child("Title").setValue(titleLabel.text)
         }
         getUpdateTime()
     }
@@ -176,11 +181,11 @@ class NoteDetailViewController: UIViewController, UITextViewDelegate, UIGestureR
         }
 
         let day = calendar.component(.day, from: date)
-        let year = calendar.component(.year, from: date)
         let minute = calendar.component(.minute, from: date)
-        if let wds = weekdayString, let mstring = monthString, let hrs = convertedHour, let AmPm = ampm {
+        if let wds = weekdayString, let mstring = monthString, let hrs = convertedHour, let AmPm = ampm, let currentNote = self.selectedNote, let currentCell = self.selectedCell {
             let updateTimeMessage = "Updated \(wds), \(mstring) \(day) at \(hrs):\(minute) \(AmPm)"
-            userRef.child(selectedNoteId!).child("UpdateTime").setValue(updateTimeMessage)
+            userRef.child(selectedNote!.stringID).child("UpdateTime").setValue(updateTimeMessage)
+            self.priorView?.updateCell(cell: currentCell, oldNote: currentNote, newNote: Note(stringID: currentNote.stringID, title: self.titleLabel.text, updateTime: updateTimeMessage, message: self.noteBody.text))
         }
     }
 }

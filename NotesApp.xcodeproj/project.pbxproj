@@ -17,7 +17,7 @@
 		A8B6C265219C97150053A5CA /* NotesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8B6C264219C97150053A5CA /* NotesListViewController.swift */; };
 		A8B6C267219C9AF90053A5CA /* NoteCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8B6C266219C9AF90053A5CA /* NoteCell.swift */; };
 		A8B6C28C219CAEA60053A5CA /* NoteDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8B6C28B219CAEA60053A5CA /* NoteDetailViewController.swift */; };
-		A8B6C28E219DCE030053A5CA /* TimeFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8B6C28D219DCE030053A5CA /* TimeFormatter.swift */; };
+		A8B6C290219F1F140053A5CA /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8B6C28F219F1F140053A5CA /* Note.swift */; };
 		F50F1B7084921F5F83E12AF3 /* Pods_NotesApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3A24792F8301B1D7BF89E43 /* Pods_NotesApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -35,7 +35,7 @@
 		A8B6C264219C97150053A5CA /* NotesListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesListViewController.swift; sourceTree = "<group>"; };
 		A8B6C266219C9AF90053A5CA /* NoteCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteCell.swift; sourceTree = "<group>"; };
 		A8B6C28B219CAEA60053A5CA /* NoteDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteDetailViewController.swift; sourceTree = "<group>"; };
-		A8B6C28D219DCE030053A5CA /* TimeFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeFormatter.swift; sourceTree = "<group>"; };
+		A8B6C28F219F1F140053A5CA /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
 		B3A24792F8301B1D7BF89E43 /* Pods_NotesApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NotesApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB3E5D9896B372F4AFB1EB37 /* Pods-NotesApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotesApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-NotesApp/Pods-NotesApp.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -85,11 +85,11 @@
 				A8B6C24D219C75C70053A5CA /* LoginViewController.swift */,
 				A8B6C264219C97150053A5CA /* NotesListViewController.swift */,
 				A8B6C28B219CAEA60053A5CA /* NoteDetailViewController.swift */,
-				A8B6C28D219DCE030053A5CA /* TimeFormatter.swift */,
 				A8B6C266219C9AF90053A5CA /* NoteCell.swift */,
 				A8B6C255219C75C90053A5CA /* Assets.xcassets */,
 				A8B6C262219C7DF30053A5CA /* Main.storyboard */,
 				A8B6C257219C75C90053A5CA /* LaunchScreen.storyboard */,
+				A8B6C28F219F1F140053A5CA /* Note.swift */,
 				A8B6C25A219C75C90053A5CA /* Info.plist */,
 				A8B6C260219C769B0053A5CA /* GoogleService-Info.plist */,
 				A8B6C252219C75C70053A5CA /* NotesApp.xcdatamodeld */,
@@ -235,7 +235,7 @@
 			files = (
 				A8B6C265219C97150053A5CA /* NotesListViewController.swift in Sources */,
 				A8B6C254219C75C70053A5CA /* NotesApp.xcdatamodeld in Sources */,
-				A8B6C28E219DCE030053A5CA /* TimeFormatter.swift in Sources */,
+				A8B6C290219F1F140053A5CA /* Note.swift in Sources */,
 				A8B6C267219C9AF90053A5CA /* NoteCell.swift in Sources */,
 				A8B6C24E219C75C70053A5CA /* LoginViewController.swift in Sources */,
 				A8B6C24C219C75C70053A5CA /* AppDelegate.swift in Sources */,
