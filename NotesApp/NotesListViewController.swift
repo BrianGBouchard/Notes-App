@@ -108,6 +108,7 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
     @IBAction func logoutButtonPressed(sender: Any?) {
         do {
             try Auth.auth().signOut()
+            self.key = nil
             self.dismiss(animated: true, completion: nil)
         } catch {
             print("Error could not sign out")

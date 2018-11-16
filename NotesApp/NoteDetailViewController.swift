@@ -50,7 +50,12 @@ class NoteDetailViewController: UIViewController, UITextViewDelegate, UIGestureR
         if let priorView = self.priorView, let currentNote = self.selectedNote, let currentCell = self.selectedCell {
             if ((self.titleLabel.text == "[Add Title]" || self.titleLabel.text == "") && (self.noteBody.text == "[Add Text]" || self.noteBody.text == "")) {
                 priorView.deleteCell(cellForNote: currentNote)
-                userRef.child(currentNote.stringID).removeValue()            }
+                userRef.child(currentNote.stringID).removeValue()
+            }
+
+            if titleLabel.text == "" {
+                (currentCell as! NoteCell).titleLabel.text = "[No Title]"
+            }
         }
     }
 
@@ -75,16 +80,14 @@ class NoteDetailViewController: UIViewController, UITextViewDelegate, UIGestureR
     func textViewDidChange(_ textView: UITextView) {
         if let currentKey = self.key {
             do {
-                let encryptedTitle = try encryptMessage(message: self.titleLabel.text, encryptionKey: currentKey)
-                let encryptedMessage = try encryptMessage(message: self.noteBody.text, encryptionKey: currentKey)
+                let encryptedTitle = encryptMessage(message: self.titleLabel.text, encryptionKey: currentKey)
+                let encryptedMessage = encryptMessage(message: self.noteBody.text, encryptionKey: currentKey)
                 if textView === noteBody {
-                    userRef.child(selectedNote!.stringID).child("NoteBody").setValue(encryptedTitle)
+                    userRef.child(selectedNote!.stringID).child("NoteBody").setValue(encryptedMessage)
                 } else if textView === titleLabel {
-                    userRef.child(selectedNote!.stringID).child("Title").setValue(encryptedMessage)
+                    userRef.child(selectedNote!.stringID).child("Title").setValue(encryptedTitle)
                 }
                 getUpdateTime()
-            } catch {
-                print(error.localizedDescription)
             }
         }
 
