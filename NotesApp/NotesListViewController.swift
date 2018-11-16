@@ -3,6 +3,7 @@ import UIKit
 import Firebase
 import FirebaseDatabase
 import FirebaseAuth
+import RNCryptor
 
 class NotesListViewController: UIViewController, UINavigationControllerDelegate, UITableViewDelegate, UITableViewDataSource {
 
@@ -13,6 +14,7 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
     //var notes: [(stringID: String, title: String, updateTime: String)] = []
     var selectedNote: Note?
     var selectedCell: UITableViewCell?
+    var key: String?
     let databaseRef = Database.database().reference(withPath: "Users")
 
     override func viewDidLoad() {
@@ -38,18 +40,20 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
         if let Url = url {
             let request = URLRequest(url: Url)
             let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-                if let data = data {
+                if let data = data, let currentKey = self.key {
                     do {
                         let json = try JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
                         for item in json {
                             userRef.child(item.key).child("Title").observeSingleEvent(of: .value, with: { (titleSnapshot) in
                                 userRef.child(item.key).child("UpdateTime").observeSingleEvent(of: .value, with: { (updateTimeSnapshot) in
                                     userRef.child(item.key).child("NoteBody").observeSingleEvent(of: .value, with: { (messageSnapshot) in
-                                        let note = Note(stringID: item.key, title: titleSnapshot.value as! String, updateTime: updateTimeSnapshot.value as! String, message: messageSnapshot.value as! String)
-                                        self.notes.append(note)
 
-                                        //self.notes.append((stringID: item.key, title: titleSnapshot.value as! String, updateTime: updateTimeSnapshot.value as! String))
-                                        self.notesTable.reloadData()
+                                            let decryptedTitle = decryptMessage(encryptedMessage: titleSnapshot.value as! String, encryptionKey: currentKey)
+                                            let decryptedNote = decryptMessage(encryptedMessage: messageSnapshot.value as! String, encryptionKey: currentKey)
+                                            let note = Note(stringID: item.key, title: decryptedTitle, updateTime: updateTimeSnapshot.value as! String, message: decryptedNote)
+                                            self.notes.append(note)
+                                            self.notesTable.reloadData()
+
                                     })
 
                                 })
@@ -115,7 +119,8 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
             let nextView = segue.destination as! NoteDetailViewController
             nextView.priorView = self
             nextView.selectedCell = self.selectedCell
-            if let currentNote = self.selectedNote {
+            if let currentNote = self.selectedNote, let currentKey = self.key {
+                nextView.key = currentKey
                 nextView.selectedNote = currentNote
                 self.selectedNote = nil
                 self.selectedCell = nil

@@ -18,6 +18,7 @@
 		A8B6C267219C9AF90053A5CA /* NoteCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8B6C266219C9AF90053A5CA /* NoteCell.swift */; };
 		A8B6C28C219CAEA60053A5CA /* NoteDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8B6C28B219CAEA60053A5CA /* NoteDetailViewController.swift */; };
 		A8B6C290219F1F140053A5CA /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8B6C28F219F1F140053A5CA /* Note.swift */; };
+		A8B6C292219F4D120053A5CA /* EncryptionFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8B6C291219F4D120053A5CA /* EncryptionFunctions.swift */; };
 		F50F1B7084921F5F83E12AF3 /* Pods_NotesApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3A24792F8301B1D7BF89E43 /* Pods_NotesApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -36,6 +37,7 @@
 		A8B6C266219C9AF90053A5CA /* NoteCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteCell.swift; sourceTree = "<group>"; };
 		A8B6C28B219CAEA60053A5CA /* NoteDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteDetailViewController.swift; sourceTree = "<group>"; };
 		A8B6C28F219F1F140053A5CA /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
+		A8B6C291219F4D120053A5CA /* EncryptionFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionFunctions.swift; sourceTree = "<group>"; };
 		B3A24792F8301B1D7BF89E43 /* Pods_NotesApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NotesApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB3E5D9896B372F4AFB1EB37 /* Pods-NotesApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotesApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-NotesApp/Pods-NotesApp.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -84,6 +86,7 @@
 				A8B6C24B219C75C70053A5CA /* AppDelegate.swift */,
 				A8B6C24D219C75C70053A5CA /* LoginViewController.swift */,
 				A8B6C264219C97150053A5CA /* NotesListViewController.swift */,
+				A8B6C291219F4D120053A5CA /* EncryptionFunctions.swift */,
 				A8B6C28B219CAEA60053A5CA /* NoteDetailViewController.swift */,
 				A8B6C266219C9AF90053A5CA /* NoteCell.swift */,
 				A8B6C255219C75C90053A5CA /* Assets.xcassets */,
@@ -209,6 +212,7 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-NotesApp/Pods-NotesApp-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
+				"${BUILT_PRODUCTS_DIR}/RNCryptor/RNCryptor.framework",
 				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
@@ -218,6 +222,7 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RNCryptor.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
@@ -233,6 +238,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A8B6C292219F4D120053A5CA /* EncryptionFunctions.swift in Sources */,
 				A8B6C265219C97150053A5CA /* NotesListViewController.swift in Sources */,
 				A8B6C254219C75C70053A5CA /* NotesApp.xcdatamodeld in Sources */,
 				A8B6C290219F1F140053A5CA /* Note.swift in Sources */,

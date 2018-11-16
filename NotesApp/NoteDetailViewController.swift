@@ -2,6 +2,8 @@ import Foundation
 import UIKit
 import Firebase
 import FirebaseDatabase
+import RNCryptor
+import CoreData
 
 class NoteDetailViewController: UIViewController, UITextViewDelegate, UIGestureRecognizerDelegate {
 
@@ -11,6 +13,7 @@ class NoteDetailViewController: UIViewController, UITextViewDelegate, UIGestureR
     var selectedNote: Note?
     weak var priorView: NotesListViewController?
     var selectedCell: UITableViewCell?
+    var key: String?
     let userRef = Database.database().reference(withPath: "Users").child(Auth.auth().currentUser!.uid)
     
     override func viewDidLoad() {
@@ -70,12 +73,28 @@ class NoteDetailViewController: UIViewController, UITextViewDelegate, UIGestureR
     }
 
     func textViewDidChange(_ textView: UITextView) {
-        if textView === noteBody {
-            userRef.child(selectedNote!.stringID).child("NoteBody").setValue(noteBody.text)
-        } else if textView === titleLabel {
-            userRef.child(selectedNote!.stringID).child("Title").setValue(titleLabel.text)
+        if let currentKey = self.key {
+            do {
+                let encryptedTitle = try encryptMessage(message: self.titleLabel.text, encryptionKey: currentKey)
+                let encryptedMessage = try encryptMessage(message: self.noteBody.text, encryptionKey: currentKey)
+                if textView === noteBody {
+                    userRef.child(selectedNote!.stringID).child("NoteBody").setValue(encryptedTitle)
+                } else if textView === titleLabel {
+                    userRef.child(selectedNote!.stringID).child("Title").setValue(encryptedMessage)
+                }
+                getUpdateTime()
+            } catch {
+                print(error.localizedDescription)
+            }
         }
-        getUpdateTime()
+
+        if textView === noteBody && noteBody.text == "" {
+            userRef.child(selectedNote!.stringID).child("NoteBody").setValue("")
+        }
+
+        if textView === titleLabel && titleLabel.text == "" {
+            userRef.child(selectedNote!.stringID).child("Title").setValue("")
+        }
     }
 
     func textViewDidBeginEditing(_ textView: UITextView) {

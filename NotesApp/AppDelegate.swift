@@ -1,6 +1,7 @@
 import UIKit
 import CoreData
 import Firebase
+import RNCryptor
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -12,6 +13,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UIBarButtonItem.appearance().setTitleTextAttributes([NSAttributedString.Key.font:UIFont(name: "PingFangHK-thin", size: 20.0)!], for: .normal)
         UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.font:UIFont(name: "PingFangHK-thin", size: 20.0)!, NSAttributedString.Key.foregroundColor : UIColor.white]
         FirebaseApp.configure()
+
+        func generateEncryptionKey(withPassword password:String) -> String {
+            let randomData = RNCryptor.randomData(ofLength: 32)
+            let cipherData = RNCryptor.encrypt(data: randomData, withPassword: password)
+            return cipherData.base64EncodedString()
+        }
+
         return true
     }
 

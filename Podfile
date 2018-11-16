@@ -11,6 +11,7 @@ target 'NotesApp' do
   pod 'FirebaseCore'
   pod 'FirebaseAuth'
   pod 'FirebaseDatabase'
+  pod 'RNCryptor', '~> 5.0'
 
 
 end

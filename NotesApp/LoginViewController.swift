@@ -1,6 +1,7 @@
 import UIKit
 import Firebase
 import FirebaseAuth
+import CoreData
 
 class LoginViewController: UIViewController, UITextFieldDelegate, UIGestureRecognizerDelegate {
 
@@ -41,8 +42,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate, UIGestureRecog
             Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!) { (user, error) in
                 if user != nil {
                     self.performSegue(withIdentifier: "login", sender: self)
-                    self.emailTextField.text = ""
-                    self.passwordTextField.text = ""
                     self.activityMonitor.stopAnimating()
                 } else {
                     if let errorDescription = error?.localizedDescription {
@@ -68,10 +67,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, UIGestureRecog
             activityMonitor.startAnimating()
             Auth.auth().createUser(withEmail: emailTextField.text!, password: passwordTextField.text!) { (user, error) in
                 if user != nil {
-                    self.emailTextField.text = ""
-                    self.passwordTextField.text = ""
-                    self.activityMonitor.stopAnimating()
-                    self.performSegue(withIdentifier: "login", sender: self)
+                    self.perform(#selector(self.loginButtonPressed(sender:)), with: self.loginButton)
                 } else {
                     if let errorDescription = error?.localizedDescription {
                         let alert = UIAlertController(title: "Error", message: errorDescription, preferredStyle: .alert)
@@ -87,6 +83,17 @@ class LoginViewController: UIViewController, UITextFieldDelegate, UIGestureRecog
                         self.present(alert, animated: true)
                     }
                 }
+            }
+        }
+    }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "login" {
+            let nextView = (segue.destination as! UINavigationController).viewControllers[0] as! NotesListViewController
+            if let passwordText = passwordTextField.text {
+                nextView.key = passwordText
+                self.emailTextField.text = ""
+                self.passwordTextField.text = ""
             }
         }
     }
