@@ -53,7 +53,7 @@ class NoteDetailViewController: UIViewController, UITextViewDelegate, UIGestureR
                 userRef.child(currentNote.stringID).removeValue()
             }
 
-            if titleLabel.text == "" {
+            if titleLabel.text == "" || titleLabel.text == "[Add Title]" {
                 (currentCell as! NoteCell).titleLabel.text = "[No Title]"
             }
         }
@@ -213,10 +213,20 @@ class NoteDetailViewController: UIViewController, UITextViewDelegate, UIGestureR
 
         let day = calendar.component(.day, from: date)
         let minute = calendar.component(.minute, from: date)
-        if let wds = weekdayString, let mstring = monthString, let hrs = convertedHour, let AmPm = ampm, let currentNote = self.selectedNote, let currentCell = self.selectedCell {
+        if let wds = weekdayString, let mstring = monthString, let hrs = convertedHour, let AmPm = ampm, let currentNote = self.selectedNote {
             let updateTimeMessage = "Updated \(wds), \(mstring) \(day) at \(hrs):\(minute) \(AmPm)"
             userRef.child(selectedNote!.stringID).child("UpdateTime").setValue(updateTimeMessage)
-            self.priorView?.updateCell(cell: currentCell, oldNote: currentNote, newNote: Note(stringID: currentNote.stringID, title: self.titleLabel.text, updateTime: updateTimeMessage, message: self.noteBody.text))
+            if let currentCell = self.selectedCell {
+                self.priorView?.updateCell(cell: currentCell, oldNote: currentNote, newNote: Note(stringID: currentNote.stringID, title: self.titleLabel.text, updateTime: updateTimeMessage, message: self.noteBody.text))
+            }
+            
+            if let index = self.priorView?.notes.firstIndex(where: { (note) -> Bool in
+                note.stringID == currentNote.stringID }) {
+                self.priorView?.notes[index].message = self.noteBody.text
+                self.priorView?.notes[index].title = self.titleLabel.text
+                self.priorView?.notes[index].updateTime = updateTimeMessage
+                self.priorView?.notesTable.reloadData()
+            }
         }
     }
 }

@@ -8,6 +8,12 @@ class NoteCell: UITableViewCell {
     
     var stringID: String?
 
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.titleLabel.isHidden = true
+        self.updateTimeLabel.isHidden = true
+    }
+
     func updateView() {
         titleLabel.fadeTransition(0.2)
         updateTimeLabel.fadeTransition(0.2)

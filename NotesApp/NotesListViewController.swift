@@ -71,6 +71,27 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
     @objc func handleLongPress(longPress: UILongPressGestureRecognizer) {
         if longPress.state == UIGestureRecognizer.State.began {
 
+            for cell in notesTable.visibleCells {
+                if cell.isHighlighted {
+                    let highlightedCell = cell as! NoteCell
+                    let alert = UIAlertController(title: "Delete Note?", message: nil, preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "Delete", style: .default) { (action) in
+                        self.databaseRef.child(Auth.auth().currentUser!.uid).child(highlightedCell.stringID!).removeValue()
+                        let indexPath = self.notes.firstIndex(where: { (note) -> Bool in
+                            note.stringID == highlightedCell.stringID!
+                        })
+                        if let index = indexPath {
+                            self.notes.remove(at: index)
+                            self.notesTable.deleteRows(at: [[0, index]], with: UITableView.RowAnimation.automatic)
+                        }
+                    }
+                    let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+                    alert.addAction(okAction)
+                    alert.addAction(cancelAction)
+                    self.present(alert, animated: true)
+                }
+            }
+            /*
             let touchPoint = longPress.location(in: self.view)
             if let indexPath = self.notesTable.indexPathForRow(at: touchPoint) {
                 let cell = self.notesTable.cellForRow(at: indexPath) as! NoteCell
@@ -84,7 +105,7 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
                 alert.addAction(okAction)
                 alert.addAction(cancelAction)
                 self.present(alert, animated: true)
-            }
+            }*/
         }
     }
 
@@ -176,13 +197,15 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! NoteCell
         cell.titleLabel.text! = String(notes[indexPath.row].title)
-        if cell.titleLabel.text! == "" {
+        if cell.titleLabel.text! == "" || cell.titleLabel.text! == "[Add Title]" {
             cell.titleLabel.text! = "[No Title]"
         }
         cell.stringID = notes[indexPath.row].stringID
         cell.updateTimeLabel.text = notes[indexPath.row].updateTime
-        cell.updateTimeLabel.fadeTransition(1.0)
-        cell.titleLabel.fadeTransition(1.0)
+        //cell.updateTimeLabel.fadeTransition(1.0)
+        //cell.updateTimeLabel.isHidden = false
+        //cell.titleLabel.fadeTransition(1.0)
+        //cell.titleLabel.isHidden = false
         return cell
     }
 
@@ -196,5 +219,11 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
             tableView.deselectRow(at: indexPath, animated: true)
             self.performSegue(withIdentifier: "detailView", sender: self)
         }
+    }
+
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let noteCell = cell as! NoteCell
+        noteCell.titleLabel.fadeTransition(1.0)
+        noteCell.updateTimeLabel.fadeTransition(1.0)
     }
 }
