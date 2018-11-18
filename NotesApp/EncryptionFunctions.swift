@@ -1,6 +1,5 @@
 import Foundation
 import RNCryptor
-import CoreData
 
 func encryptMessage(message: String, encryptionKey: String) -> String {
     let messageData = message.data(using: .utf8)!
@@ -21,6 +20,7 @@ func decryptMessage(encryptedMessage: String, encryptionKey: String) -> String {
     }
 }
 
+// For adding a "change password" feature: rather than using the user's password as the encryption key, the app will generate a random key and encrpyt that key using the user's password.  Rather than decrypting and re-encrypting all the notes in the database, changing the password would simply decrypt the encryption key and re-encrypt it with the new password
 func generateEncryptionKey(withPassword password:String) throws -> String {
     let randomData = RNCryptor.randomData(ofLength: 32)
     let cipherData = RNCryptor.encrypt(data: randomData, withPassword: password)

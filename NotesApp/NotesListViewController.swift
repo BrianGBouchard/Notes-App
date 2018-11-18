@@ -7,15 +7,18 @@ import RNCryptor
 
 class NotesListViewController: UIViewController, UINavigationControllerDelegate, UITableViewDelegate, UITableViewDataSource {
 
+    // MARK: Properties
+
     @IBOutlet var notesTable: UITableView!
     @IBOutlet var logoutButton: UIButton!
 
     var notes: Array<Note> = []
-    //var notes: [(stringID: String, title: String, updateTime: String)] = []
     var selectedNote: Note?
     var selectedCell: UITableViewCell?
     var key: String?
     let databaseRef = Database.database().reference(withPath: "Users")
+
+    // MARK: View Controller Methods
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,14 +29,25 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(longPress:)))
         self.view.addGestureRecognizer(longPress)
         getData()
-
-
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(true)
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "detailView" {
+            let nextView = segue.destination as! NoteDetailViewController
+            nextView.priorView = self
+            nextView.selectedCell = self.selectedCell
+            if let currentNote = self.selectedNote, let currentKey = self.key {
+                nextView.key = currentKey
+                nextView.selectedNote = currentNote
+                self.selectedNote = nil
+                self.selectedCell = nil
+            }
+        }
     }
 
+    // MARK: Fetch database data
+
+    // Locally instantiates "Note" objects using data from Firebase and adds them to the Table View data source "notes" array
     func getData() {
         let userRef = databaseRef.child(Auth.auth().currentUser!.uid)
         let url = URL(string: "https://notesapp-2d98c.firebaseio.com/Users/\(Auth.auth().currentUser!.uid).json?print=pretty")
@@ -47,13 +61,16 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
                             userRef.child(item.key).child("Title").observeSingleEvent(of: .value, with: { (titleSnapshot) in
                                 userRef.child(item.key).child("UpdateTime").observeSingleEvent(of: .value, with: { (updateTimeSnapshot) in
                                     userRef.child(item.key).child("NoteBody").observeSingleEvent(of: .value, with: { (messageSnapshot) in
-
+                                        userRef.child(item.key).child("Unix").observeSingleEvent(of: .value, with: { (unixSnapshot) in
                                             let decryptedTitle = decryptMessage(encryptedMessage: titleSnapshot.value as! String, encryptionKey: currentKey)
                                             let decryptedNote = decryptMessage(encryptedMessage: messageSnapshot.value as! String, encryptionKey: currentKey)
-                                            let note = Note(stringID: item.key, title: decryptedTitle, updateTime: updateTimeSnapshot.value as! String, message: decryptedNote)
+                                            let note = Note(stringID: item.key, title: decryptedTitle, updateTime: updateTimeSnapshot.value as! String, message: decryptedNote, unix: unixSnapshot.value as! Double)
                                             self.notes.append(note)
+                                            self.notes.sort(by: { (note1, note2) -> Bool in
+                                                note1.unix > note2.unix
+                                            })
                                             self.notesTable.reloadData()
-
+                                        })
                                     })
 
                                 })
@@ -67,6 +84,8 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
             task.resume()
         }
     }
+
+    // MARK: Actions
 
     @objc func handleLongPress(longPress: UILongPressGestureRecognizer) {
         if longPress.state == UIGestureRecognizer.State.began {
@@ -91,26 +110,11 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
                     self.present(alert, animated: true)
                 }
             }
-            /*
-            let touchPoint = longPress.location(in: self.view)
-            if let indexPath = self.notesTable.indexPathForRow(at: touchPoint) {
-                let cell = self.notesTable.cellForRow(at: indexPath) as! NoteCell
-                let alert = UIAlertController(title: "Delete Note?", message: nil, preferredStyle: .alert)
-                let okAction = UIAlertAction(title: "Delete", style: .default) { (action) in
-                    self.databaseRef.child(Auth.auth().currentUser!.uid).child(cell.stringID!).removeValue()
-                    self.notes.remove(at: indexPath.row)
-                    self.notesTable.deleteRows(at: [indexPath], with: UITableView.RowAnimation.automatic)
-                }
-                let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-                alert.addAction(okAction)
-                alert.addAction(cancelAction)
-                self.present(alert, animated: true)
-            }*/
         }
     }
 
     @IBAction func addButtonPressed(sender: Any?) {
-        let newNoteItem: Note = Note(stringID: String(arc4random()), title: "", updateTime: "", message: "")
+        let newNoteItem: Note = Note(stringID: String(arc4random()), title: "", updateTime: "", message: "", unix: Date().timeIntervalSince1970)
         databaseRef.child(Auth.auth().currentUser!.uid).child(newNoteItem.stringID).child("Title").setValue("")
         databaseRef.child(Auth.auth().currentUser!.uid).child(newNoteItem.stringID).child("NoteBody").setValue("")
         databaseRef.child(Auth.auth().currentUser!.uid).child(newNoteItem.stringID).child("UpdateTime").setValue("")
@@ -136,31 +140,10 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
         }
     }
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "detailView" {
-            let nextView = segue.destination as! NoteDetailViewController
-            nextView.priorView = self
-            nextView.selectedCell = self.selectedCell
-            if let currentNote = self.selectedNote, let currentKey = self.key {
-                nextView.key = currentKey
-                nextView.selectedNote = currentNote
-                self.selectedNote = nil
-                self.selectedCell = nil
-            }
-        }
+    @IBAction func unwindToTable(segue: UIStoryboardSegue) {
     }
 
     func deleteCell(cellForNote: Note) {
-        /*for item in notes {
-            if item.title == (cell as! NoteCell).titleLabel.text! {
-                let index = notes.lastIndex { (note) -> Bool in
-                    note === item
-                }
-                notes.remove(at: index!)
-                notesTable.deleteRows(at: [[0,index!]], with: UITableView.RowAnimation.bottom)
-                table
-            }
-        }*/
         let index = notes.firstIndex { (currentNote) -> Bool in
             currentNote.stringID == cellForNote.stringID
         }
@@ -178,9 +161,8 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
         tableCell.updateTimeLabel.text! = newNote.updateTime
     }
 
-    @IBAction func unwindToTable(segue: UIStoryboardSegue) {
-        
-    }
+
+    // MARK: TableView delegate methods
 
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -202,10 +184,6 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
         }
         cell.stringID = notes[indexPath.row].stringID
         cell.updateTimeLabel.text = notes[indexPath.row].updateTime
-        //cell.updateTimeLabel.fadeTransition(1.0)
-        //cell.updateTimeLabel.isHidden = false
-        //cell.titleLabel.fadeTransition(1.0)
-        //cell.titleLabel.isHidden = false
         return cell
     }
 

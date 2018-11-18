@@ -1,7 +1,6 @@
 import UIKit
 import Firebase
 import FirebaseAuth
-import CoreData
 
 class LoginViewController: UIViewController, UITextFieldDelegate, UIGestureRecognizerDelegate {
 

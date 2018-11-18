@@ -13,11 +13,6 @@ class NoteCell: UITableViewCell {
         self.titleLabel.isHidden = true
         self.updateTimeLabel.isHidden = true
     }
-
-    func updateView() {
-        titleLabel.fadeTransition(0.2)
-        updateTimeLabel.fadeTransition(0.2)
-    }
 }
 
 extension UIView {
