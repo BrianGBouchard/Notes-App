@@ -13,6 +13,7 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
     @IBOutlet var logoutButton: UIButton!
 
     var notes: Array<Note> = []
+    var notesIDs: Array<String> = []
     var selectedNote: Note?
     var selectedCell: UITableViewCell?
     var key: String?
@@ -63,6 +64,7 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
                                     let decryptedNote = decryptMessage(encryptedMessage: messageSnapshot.value as! String, encryptionKey: currentKey)
                                     let note = Note(stringID: item, title: decryptedTitle, updateTime: updateTimeSnapshot.value as! String, message: decryptedNote, unix: unixSnapshot.value as! Double)
                                     self.notes.append(note)
+                                    self.notesIDs.append(note.stringID)
                                     self.notes.sort(by: { (note1, note2) -> Bool in
                                         note1.unix > note2.unix
                                     })
@@ -144,8 +146,23 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
         }
     }
 
+    // Checks for duplicate IDs
     @IBAction func addButtonPressed(sender: Any?) {
-        let newNoteItem: Note = Note(stringID: String(arc4random()), title: "", updateTime: "", message: "", unix: Date().timeIntervalSince1970)
+        var newID = String(arc4random())
+        if notesIDs.contains(newID) {
+            while notesIDs.contains(newID) {
+                newID = String(arc4random())
+                if notesIDs.contains(newID) == false {
+                    addNote(id: newID)
+                }
+            }
+        } else {
+            addNote(id: newID)
+        }
+    }
+
+    func addNote(id: String) {
+        let newNoteItem: Note = Note(stringID: id, title: "", updateTime: "", message: "", unix: Date().timeIntervalSince1970)
         databaseRef.child(Auth.auth().currentUser!.uid).child("Notes").child(newNoteItem.stringID).child("Title").setValue("")
         databaseRef.child(Auth.auth().currentUser!.uid).child("Notes").child(newNoteItem.stringID).child("NoteBody").setValue("")
         databaseRef.child(Auth.auth().currentUser!.uid).child("Notes").child(newNoteItem.stringID).child("UpdateTime").setValue("")
@@ -158,7 +175,6 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
             self.selectedCell = notesTable.cellForRow(at: [0,index])
         }
         self.performSegue(withIdentifier: "detailView", sender: self)
-
     }
 
     @IBAction func logoutButtonPressed(sender: Any?) {
