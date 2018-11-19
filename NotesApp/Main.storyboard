@@ -95,7 +95,7 @@
                                     <constraint firstAttribute="height" constant="17" id="ofZ-GB-tM2"/>
                                 </constraints>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Keep me logged in" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8D2-V0-HEg">
+                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Keep me logged in" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8D2-V0-HEg">
                                 <rect key="frame" x="138.5" y="389" width="123" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="20" id="Jzb-PJ-2i2"/>
@@ -137,6 +137,7 @@
                         <outlet property="checkmark" destination="7Nn-XW-dNS" id="ZgQ-w2-r2K"/>
                         <outlet property="checkmarkSuperview" destination="F7l-Wr-Nj5" id="75p-w4-6NR"/>
                         <outlet property="emailTextField" destination="JIR-yD-mBe" id="3ip-a4-oWY"/>
+                        <outlet property="keepMeLoggedInLabel" destination="8D2-V0-HEg" id="rjz-1F-0Ay"/>
                         <outlet property="loginButton" destination="Aih-VG-z1f" id="T9w-b5-hff"/>
                         <outlet property="passwordTextField" destination="4Hs-Kh-hYE" id="OnY-VM-Og7"/>
                         <segue destination="8AH-CP-lme" kind="showDetail" identifier="login" id="HHV-Uq-hAy"/>

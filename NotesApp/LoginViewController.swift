@@ -11,6 +11,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, UIGestureRecog
     @IBOutlet var loginButton: UIButton!
     @IBOutlet var checkmark: UIImageView!
     @IBOutlet var checkmarkSuperview: UIView!
+    @IBOutlet var keepMeLoggedInLabel: UILabel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,8 +28,10 @@ class LoginViewController: UIViewController, UITextFieldDelegate, UIGestureRecog
         let backgroundTapped = UITapGestureRecognizer(target: self, action: #selector(closeKeyboardTap(sender:)))
         self.view.addGestureRecognizer(backgroundTapped)
 
-        let selectKeepMeLoggedIn = UITapGestureRecognizer(target: self, action: #selector(keepMeLoggedInTapped(gesture:)))
-        checkmarkSuperview.addGestureRecognizer(selectKeepMeLoggedIn)
+        let viewSelectKeepMeLoggedIn = UITapGestureRecognizer(target: self, action: #selector(keepMeLoggedInTapped(gesture:)))
+        let labelSelectKeepMeLoggedIn = UITapGestureRecognizer(target: self, action: #selector(keepMeLoggedInTapped(gesture:)))
+        checkmarkSuperview.addGestureRecognizer(viewSelectKeepMeLoggedIn)
+        keepMeLoggedInLabel.addGestureRecognizer(labelSelectKeepMeLoggedIn)
 
     }
 
