@@ -15,7 +15,7 @@ class NoteDetailViewController: UIViewController, UITextViewDelegate, UIGestureR
     weak var priorView: NotesListViewController?
     var selectedCell: UITableViewCell?
     var key: String?
-    let userRef = Database.database().reference(withPath: "Users").child(Auth.auth().currentUser!.uid)
+    let userRef = Database.database().reference(withPath: "users").child(Auth.auth().currentUser!.uid).child("Notes")
 
     // MARK: View Controller Methods
     

@@ -16,7 +16,7 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
     var selectedNote: Note?
     var selectedCell: UITableViewCell?
     var key: String?
-    let databaseRef = Database.database().reference(withPath: "Users")
+    let databaseRef = Database.database().reference(withPath: "users")
 
     // MARK: View Controller Methods
 
@@ -50,39 +50,70 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
     // Locally instantiates "Note" objects using data from Firebase and adds them to the Table View data source "notes" array
     func getData() {
         let userRef = databaseRef.child(Auth.auth().currentUser!.uid)
-        let url = URL(string: "https://notesapp-2d98c.firebaseio.com/Users/\(Auth.auth().currentUser!.uid).json?print=pretty")
+        if let currentKey = self.key {
+            userRef.child("Notes").observeSingleEvent(of: .value, with: { (childrenValues) in
+                let itemValues = childrenValues.children.allObjects as! [DataSnapshot]
+                for itemKeys in itemValues {
+                    let item = itemKeys.key
+                    userRef.child("Notes").child(item).child("Title").observeSingleEvent(of: .value, with: { (titleSnapshot) in
+                        userRef.child("Notes").child(item).child("UpdateTime").observeSingleEvent(of: .value, with: { (updateTimeSnapshot) in
+                            userRef.child("Notes").child(item).child("NoteBody").observeSingleEvent(of: .value, with: { (messageSnapshot) in
+                                userRef.child("Notes").child(item).child("Unix").observeSingleEvent(of: .value, with: { (unixSnapshot) in
+                                    let decryptedTitle = decryptMessage(encryptedMessage: titleSnapshot.value as! String, encryptionKey: currentKey)
+                                    let decryptedNote = decryptMessage(encryptedMessage: messageSnapshot.value as! String, encryptionKey: currentKey)
+                                    let note = Note(stringID: item, title: decryptedTitle, updateTime: updateTimeSnapshot.value as! String, message: decryptedNote, unix: unixSnapshot.value as! Double)
+                                    self.notes.append(note)
+                                    self.notes.sort(by: { (note1, note2) -> Bool in
+                                        note1.unix > note2.unix
+                                    })
+                                    self.notesTable.reloadData()
+                                })
+                            })
+
+                        })
+                    })
+                }
+            })
+        }
+
+        // Alternate method for iterating through a database, using URLSession
+
+        /*let url = URL(string: "https://notesapp-2d98c.firebaseio.com/users/\(Auth.auth().currentUser!.uid).json?print=pretty")
         if let Url = url {
             let request = URLRequest(url: Url)
             let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
                 if let data = data, let currentKey = self.key {
                     do {
                         let json = try JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
-                        for item in json {
-                            userRef.child(item.key).child("Title").observeSingleEvent(of: .value, with: { (titleSnapshot) in
-                                userRef.child(item.key).child("UpdateTime").observeSingleEvent(of: .value, with: { (updateTimeSnapshot) in
-                                    userRef.child(item.key).child("NoteBody").observeSingleEvent(of: .value, with: { (messageSnapshot) in
-                                        userRef.child(item.key).child("Unix").observeSingleEvent(of: .value, with: { (unixSnapshot) in
-                                            let decryptedTitle = decryptMessage(encryptedMessage: titleSnapshot.value as! String, encryptionKey: currentKey)
-                                            let decryptedNote = decryptMessage(encryptedMessage: messageSnapshot.value as! String, encryptionKey: currentKey)
-                                            let note = Note(stringID: item.key, title: decryptedTitle, updateTime: updateTimeSnapshot.value as! String, message: decryptedNote, unix: unixSnapshot.value as! Double)
-                                            self.notes.append(note)
-                                            self.notes.sort(by: { (note1, note2) -> Bool in
-                                                note1.unix > note2.unix
+                        if let entries = json["Notes"] as? [(key: String, value: Any)] {
+                            for item in entries  {
+                                userRef.child(item.key).child("Title").observeSingleEvent(of: .value, with: { (titleSnapshot) in
+                                    userRef.child(item.key).child("UpdateTime").observeSingleEvent(of: .value, with: { (updateTimeSnapshot) in
+                                        userRef.child(item.key).child("NoteBody").observeSingleEvent(of: .value, with: { (messageSnapshot) in
+                                            userRef.child(item.key).child("Unix").observeSingleEvent(of: .value, with: { (unixSnapshot) in
+                                                let decryptedTitle = decryptMessage(encryptedMessage: titleSnapshot.value as! String, encryptionKey: currentKey)
+                                                let decryptedNote = decryptMessage(encryptedMessage: messageSnapshot.value as! String, encryptionKey: currentKey)
+                                                let note = Note(stringID: item.key, title: decryptedTitle, updateTime: updateTimeSnapshot.value as! String, message: decryptedNote, unix: unixSnapshot.value as! Double)
+                                                self.notes.append(note)
+                                                self.notes.sort(by: { (note1, note2) -> Bool in
+                                                    note1.unix > note2.unix
+                                                })
+                                                self.notesTable.reloadData()
                                             })
-                                            self.notesTable.reloadData()
                                         })
-                                    })
 
+                                    })
                                 })
-                            })
+                            }
                         }
                     } catch {
                         print(error.localizedDescription)
                     }
                 }
             }
-            task.resume()
+        task.resume()
         }
+    */
     }
 
     // MARK: Actions
@@ -95,7 +126,7 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
                     let highlightedCell = cell as! NoteCell
                     let alert = UIAlertController(title: "Delete Note?", message: nil, preferredStyle: .alert)
                     let okAction = UIAlertAction(title: "Delete", style: .default) { (action) in
-                        self.databaseRef.child(Auth.auth().currentUser!.uid).child(highlightedCell.stringID!).removeValue()
+                        self.databaseRef.child(Auth.auth().currentUser!.uid).child("Notes").child(highlightedCell.stringID!).removeValue()
                         let indexPath = self.notes.firstIndex(where: { (note) -> Bool in
                             note.stringID == highlightedCell.stringID!
                         })
@@ -115,9 +146,9 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
 
     @IBAction func addButtonPressed(sender: Any?) {
         let newNoteItem: Note = Note(stringID: String(arc4random()), title: "", updateTime: "", message: "", unix: Date().timeIntervalSince1970)
-        databaseRef.child(Auth.auth().currentUser!.uid).child(newNoteItem.stringID).child("Title").setValue("")
-        databaseRef.child(Auth.auth().currentUser!.uid).child(newNoteItem.stringID).child("NoteBody").setValue("")
-        databaseRef.child(Auth.auth().currentUser!.uid).child(newNoteItem.stringID).child("UpdateTime").setValue("")
+        databaseRef.child(Auth.auth().currentUser!.uid).child("Notes").child(newNoteItem.stringID).child("Title").setValue("")
+        databaseRef.child(Auth.auth().currentUser!.uid).child("Notes").child(newNoteItem.stringID).child("NoteBody").setValue("")
+        databaseRef.child(Auth.auth().currentUser!.uid).child("Notes").child(newNoteItem.stringID).child("UpdateTime").setValue("")
         self.selectedNote = newNoteItem
         notes.append(newNoteItem)
          notesTable.reloadData()
