@@ -4,6 +4,7 @@ import Firebase
 import FirebaseDatabase
 import FirebaseAuth
 import RNCryptor
+import LUKeychainAccess
 
 class NotesListViewController: UIViewController, UINavigationControllerDelegate, UITableViewDelegate, UITableViewDataSource {
 
@@ -180,6 +181,8 @@ class NotesListViewController: UIViewController, UINavigationControllerDelegate,
     @IBAction func logoutButtonPressed(sender: Any?) {
         do {
             try Auth.auth().signOut()
+            LUKeychainAccess.standard().setString(nil, forKey: "email")
+            LUKeychainAccess.standard().setString(nil, forKey: "password")
             self.key = nil
             self.dismiss(animated: true, completion: nil)
         } catch {

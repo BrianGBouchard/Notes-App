@@ -1,6 +1,7 @@
 import UIKit
 import Firebase
 import FirebaseAuth
+import LUKeychainAccess
 
 class LoginViewController: UIViewController, UITextFieldDelegate, UIGestureRecognizerDelegate {
 
@@ -8,15 +9,27 @@ class LoginViewController: UIViewController, UITextFieldDelegate, UIGestureRecog
     @IBOutlet var passwordTextField: UITextField!
     @IBOutlet var activityMonitor: UIActivityIndicatorView!
     @IBOutlet var loginButton: UIButton!
+    @IBOutlet var checkmark: UIImageView!
+    @IBOutlet var checkmarkSuperview: UIView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        checkmark.isHidden = true
         emailTextField.delegate = self
         passwordTextField.delegate = self
         activityMonitor.hidesWhenStopped = true
+        if let keychainEmail = LUKeychainAccess.standard().string(forKey: "email"), let keychainPassword = LUKeychainAccess.standard().string(forKey: "password") {
+            emailTextField.text = keychainEmail
+            passwordTextField.text = keychainPassword
+            perform(#selector(loginButtonPressed(sender:)), with: loginButton)
+        }
 
         let backgroundTapped = UITapGestureRecognizer(target: self, action: #selector(closeKeyboardTap(sender:)))
         self.view.addGestureRecognizer(backgroundTapped)
+
+        let selectKeepMeLoggedIn = UITapGestureRecognizer(target: self, action: #selector(keepMeLoggedInTapped(gesture:)))
+        checkmarkSuperview.addGestureRecognizer(selectKeepMeLoggedIn)
+
     }
 
     func textFieldDidBeginEditing(_ textField: UITextField) {
@@ -35,11 +48,24 @@ class LoginViewController: UIViewController, UITextFieldDelegate, UIGestureRecog
         return true
     }
 
+    @objc func keepMeLoggedInTapped(gesture: UITapGestureRecognizer) {
+        if checkmark.isHidden == false {
+            checkmark.isHidden = true
+        } else if checkmark.isHidden {
+            checkmark.isHidden = false
+        }
+    }
+
     @IBAction @objc func loginButtonPressed(sender: Any?) {
         if emailTextField.text != "" && passwordTextField.text != "" {
             activityMonitor.startAnimating()
             Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!) { (user, error) in
                 if user != nil {
+                    if self.checkmark.isHidden == false {
+                        LUKeychainAccess.standard().setString(self.emailTextField.text!, forKey: "email")
+                        LUKeychainAccess.standard().setString(self.passwordTextField.text!, forKey: "password")
+                        self.checkmark.isHidden = true
+                    }
                     self.performSegue(withIdentifier: "login", sender: self)
                     self.activityMonitor.stopAnimating()
                 } else {

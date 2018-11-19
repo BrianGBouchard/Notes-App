@@ -12,6 +12,7 @@ target 'NotesApp' do
   pod 'FirebaseAuth'
   pod 'FirebaseDatabase'
   pod 'RNCryptor', '~> 5.0'
+  pod 'LUKeychainAccess'
 
 
 end
